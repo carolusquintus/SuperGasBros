@@ -5,12 +5,17 @@ local Box = require("Box")
 
 function Map:initialize()
 	self.boxes = {}
+	self.time = 0
 
 	local data = require("map1")
 	for i,v in ipairs(data) do
 		table.insert(self.boxes, Box(v.x, v.y, v.w, v.h))
 	end
 	self.box = Resources.static:getImage("data/box.png")
+end
+
+function Map:update(dt)
+	self.time = self.time + dt
 end
 
 function Map:draw()
@@ -21,6 +26,14 @@ function Map:draw()
 			end
 		end
 	end
+
+	love.graphics.setColor(227, 55, 0)
+	local waves = math.floor(WIDTH / 16)
+	for i=0, waves-1 do
+		local h = 5 + math.cos(i*16/10+self.time*3)*2+2
+		love.graphics.rectangle("fill", i*16, HEIGHT-h, 16, h)
+	end
+	love.graphics.setColor(255,255,255)
 end
 
 function Map:getBoxes()

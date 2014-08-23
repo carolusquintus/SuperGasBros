@@ -100,7 +100,7 @@ function Player:update(dt, map)
 	end
 
 	-- Charge jumps
-	if self.grounded then
+	if self.grounded and self.charge == 0 then
 		self.jumps = math.min(MAX_JUMPS, self.jumps + CHARGE_SPEED*dt)
 	end
 
@@ -119,7 +119,9 @@ end
 
 function Player:keyreleased(k)
 	if k == CONTROLS[self.id].fart then
-		self:makeFart()
+		if self.charge > 0 then
+			self:makeFart()
+		end
 	end
 end
 
@@ -146,6 +148,8 @@ function Player:makeFart()
 	local fdir = self:getFartDirection()
 	self.fart = Fart(self.x, self.y, fdir, math.min(1, self.charge))
 	self.charge = 0
+
+	self.xspeed = self.xspeed - self.dir*50
 end
 
 function Player:applyFart(fart)
